@@ -68,7 +68,7 @@ filePathElement.innerText = filePath
 
 2）将主进程作为渲染器之间的消息代理（转发）
 
-![image-20240206175205782](uploads/a29278b545fbaa86efa1bf619439162d/image-20240206175205782.png)
+![image-20240206175205782](https://github.com/Jiao1008/Learning-Notes/blob/master/git-images/1.png%20%5B%E5%8E%9F%E5%A7%8B%E5%A4%A7%E5%B0%8F%5D.jpg)
 
 3）从主进程将一个 MessagePort 传递到两个渲染器
 
