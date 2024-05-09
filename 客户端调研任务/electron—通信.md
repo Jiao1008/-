@@ -98,7 +98,7 @@ ipcRenderer.on('port', e => {
 
 通过messageChannel的特性，可以把宿主页面作为“中介”，只进行一次端口交换，后续让主进程和iframe直接经由端口（port1、port2）来通信。
 
-![image-20240207091406096](uploads/ff2df5873f124bb0991ad42d42e8e079/image-20240207091406096.png)
+![image-20240207091406096](https://github.com/Jiao1008/Learning-Notes/blob/master/git-images/2.png%20%5B%E5%8E%9F%E5%A7%8B%E5%A4%A7%E5%B0%8F%5D.jpg)
 
 ## 6、内嵌视图容器
 
