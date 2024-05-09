@@ -104,4 +104,4 @@ ipcRenderer.on('port', e => {
 
 Electron里的tag是基于chrome app的标准开发的，由于后者已经被Chrome抛弃，所以无法保证后续版本的可用性。
 
-![image-20240207093055754](uploads/b7878939ba6ea1c5fc7b879da360c81a/image-20240207093055754.png)
+![image-20240207093055754](https://github.com/Jiao1008/Learning-Notes/blob/master/git-images/3.png%20%5B%E5%8E%9F%E5%A7%8B%E5%A4%A7%E5%B0%8F%5D.jpg)
