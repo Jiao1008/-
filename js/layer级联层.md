@@ -1,0 +1,135 @@
+## 交叉观察器 - IntersectionObserver
+
+### 1. Usage<br />
+`const io = new IntersectionObserver(callback, option)` <br/>
+
+IntersectionObserver 是浏览器原生提供的构造函数，接受两个参数：
+-  callback：可见性发现变化时的回调函数
+-  option：配置对象（可选）。
+
+构造函数的返回值是一个观察器实例。实例一共有4个方法：
+-  observe：开始监听特定元素
+-  unobserve：停止监听特定元素
+-  disconnect：关闭监听工作
+-  takeRecords：返回所有观察目标的对象数组
+
+### 2. callback参数
+-  标元素的可见性变化时，会调用观察器的回调函数callback
+-  一般会触发两次，一次是目标元素刚刚进入视口时，另一次是目标元素完全离开视口
+```
+const io = new IntersectionObserver((changes, observer) => {})
+```
+-  callback函数接收两个参数：changes被观察对象数组，observer返回实例中传入的option参数
+
+### 3. IntersectionObserverEntry 对象
+-  上面的changes数组中的每一项都是一个IntersectionObserverEntry(io)对象
+
+### 4. Option 对象
+-  threshold<br/>
+    *  数组，决定了什么时候触发回调函数，可自定义，默认为[0]，即intersectionRatio达到0时触发回调函数。
+    ```
+    // 比如，[0, 0.25, 0.5, 0.75, 1]就表示当目标元素 0%、25%、50%、75%、100% 可见时，会触发回调函数。
+    new IntersectionObserver(
+      entries => {/* ... */}, 
+      {
+        threshold: [0, 0.25, 0.5, 0.75, 1]
+      }
+    );
+    ```
+-  root<br/>
+    很多时候，目标元素不仅会随着窗口滚动，还会在容器里面滚动（比如在iframe窗口里滚动）。容器内滚动也会影响目标元素的可见性，参见本文开始时的那张示意图。<br/>
+  **root**属性指定目标元素所在的容器节点（即根元素）。注意，容器元素必须是目标元素的祖先节点。
+    ```
+    const opts = { 
+      root: document.querySelector('.container'),
+    };
+    
+    const observer = new IntersectionObserver(
+      callback,
+      opts
+    );
+    ```
+-  rootMargin<br/>
+    定义根元素的margin，用来扩展或缩小rootBounds这个矩形的大小，从而影响intersectionRect交叉区域的大小。它使用CSS的定义方法。
+    ```
+    const opts = { 
+      rootMargin: "500px 0px" 
+    };
+    
+    const observer = new IntersectionObserver(
+      callback,
+      opts
+    );
+    ```
+
+### 5. 方法<br />
+-  observe
+    *  接收一个target参数，值是Element类型，用来指定被监听的目标元素
+    *  如果需要观察多个节点，需要多次调用该方法
+    ```
+    // 获取元素
+    const target = document.getElementById("dom");
+    // 开始观察
+    io.observe(target);
+    ```
+-  unobserve
+    接收一个target参数，值是Element类型，用来指定被监听的目标元素
+    ```
+    // 停止观察
+    io.unobserve(target);
+    ```
+-  disconnect
+    ```
+    // 关闭观察器
+    io.disconnect();
+    ```
+-  takeRecords
+    返回所有被观察的对象，返回值是一个数组
+    ```
+    // 获取被观察元素
+    const observeList = io.takeRecords();
+    ```
+
+### 6. 应用<br />
+-  预加载（滚动加载、翻页加载、无限加载）
+-  懒加载（后加载、惰性加载）等
+
+**注意：**API 是异步的，不随着目标元素的滚动同步触发。
+
+### 7. 实例
+#### 1. 惰性加载
+    有时，我们希望某些静态资源（比如图片），只有用户向下滚动，它们进入视口时才加载，这样可以节省带宽，提高网页性能。这就叫做"惰性加载"。
+
+    ```
+    function querySelectorFn(selector) {
+     return Array.from(document.querySelectorAll(selector));
+    }
+    
+    const observer = new IntersectionObserver((changes) => {
+     changes.forEach(item => {
+      const container = item.target;
+      const content = container.querySelector('template').content;
+      container.appendChild(content);
+      observer.unobserve(container);
+     })
+    })
+    
+    querySelectorFn('.lazy-loaded').forEach(item => {
+     observer.observe(item);
+    })
+    ```
+    上面代码中，只有目标区域可见时，才会将模板内容插入真实 DOM，从而引发静态资源的加载。
+
+#### 2. 无限滚动
+    ```
+    const intersectionObserver = new IntersectionObserver(entries => {
+     // 如果不可见，就返回
+     if (entries[0].intersectionRatio <= 0) return;
+     loadItem(10);
+    })
+
+    // 开始观察
+    intersectionObserver.observe(
+     document.querySelector('.scrollFooter')
+    )
+    ```
